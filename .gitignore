@@ -75,3 +75,5 @@ agent-ctx/
 # أدوات المنصة المحلية
 /.zscripts/
 Caddyfile
+# بيانات دخول محلية
+.admin-credentials
