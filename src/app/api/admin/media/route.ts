@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
     await db.media.create({
       data: {
         name: filename,
-        mime: MIME_BY_EXT[ext] ?? file.type || "application/octet-stream",
+        mime: MIME_BY_EXT[ext] ?? (file.type || "application/octet-stream"),
         size: buffer.length,
         data: buffer.toString("base64"),
       },
