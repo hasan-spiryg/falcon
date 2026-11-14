@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -52,3 +53,25 @@ prompt
 server.log
 # Skills directory
 /skills/
+
+# ============================================================
+# قاعدة البيانات المحلية (SQLite) — الإنتاج يستخدم Neon PostgreSQL
+# ============================================================
+/db/
+prisma/schema.render.prisma
+
+# ============================================================
+# ملفات بيئة التطوير المحلية — غير مطلوبة في مستودع GitHub
+# ============================================================
+/upload/
+/download/
+/assets_src/
+/examples/
+/mini-services/
+/tests/
+/scripts/
+agent-ctx/
+
+# أدوات المنصة المحلية
+/.zscripts/
+Caddyfile

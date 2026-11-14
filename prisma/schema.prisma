@@ -55,3 +55,16 @@ model NewsletterSub {
 
   @@map("newsletter_subs")
 }
+
+// مكتبة الوسائط — الصور المرفوعة من لوحة الإدارة
+// تُخزَّن داخل قاعدة البيانات لتبقى محفوظة بعد إعادة النشر (Render لا يحفظ الملفات المؤقتة)
+model Media {
+  id        String   @id @default(cuid())
+  name      String   @unique // اسم الملف مثل: 1731580000000-watch.png
+  mime      String // نوع المحتوى مثل: image/png
+  size      Int // الحجم بالبايت
+  data      String // المحتوى بصيغة base64
+  createdAt DateTime @default(now())
+
+  @@map("media")
+}

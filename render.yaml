@@ -1,0 +1,35 @@
+# ============================================================
+# مخطط النشر على Render — موقع فالكون
+# ------------------------------------------------------------
+# طريقة الاستخدام:
+#   1) ادفع هذا المستودع إلى GitHub
+#   2) افتح الرابط: https://render.com/deplo?repo=<رابط-مستودع-GitHub>
+#   3) عند طلب DATABASE_URL الصق رابط الاتصال المجمّع (Pooled) من Neon
+#   4) Render سينفّذ deploy/render-build.sh تلقائياً
+# ============================================================
+services:
+  - type: web
+    name: falcon
+    runtime: node
+    plan: free
+    region: frankfurt # أقرب منطقة لسوريا
+    branch: main
+    autoDeploy: true # نشر تلقائي عند كل git push
+    buildCommand: bash deploy/render-build.sh
+    startCommand: npx next start -p $PORT
+    healthCheckPath: /api
+    envVars:
+      # بناء عادي (وليس standalone) ليتوافق مع next start
+      - key: NEXT_OUTPUT_STANDALONE
+        value: "0"
+      - key: NODE_VERSION
+        value: "22.14.0"
+      # رابط قاعدة Neon — يُطلب منك عند إنشاء الخدمة (sync: false)
+      - key: DATABASE_URL
+        sync: false
+      # كلمة مرور لوحة الإدارة — تُولَّد عشوائياً وتظهر في لوحة Render
+      - key: ADMIN_PASSWORD
+        generateValue: true
+      # سر توقيع جلسات الإدارة — يُولَّد عشوائياً
+      - key: ADMIN_SECRET
+        generateValue: true

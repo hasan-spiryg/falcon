@@ -1,36 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthed } from "@/lib/admin-auth";
-import { mkdir, readdir, unlink, writeFile } from "fs/promises";
-import path from "path";
+import { db } from "@/lib/db";
+
+/**
+ * مكتبة الوسائط — الصور تُخزَّن في قاعدة البيانات (جدول media)
+ * بدل نظام الملفات، لأن قرص Render مؤقت ويُمحى عند كل نشر جديد.
+ */
 
 function unauthorized() {
   return NextResponse.json({ ok: false, error: "غير مصرح" }, { status: 401 });
 }
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const MAX_SIZE = 5 * 1024 * 1024; // 5 ميغابايت
-const ALLOWED_EXT = ["png", "jpg", "jpeg", "webp", "gif", "svg", "avif"];
+const ALLOWED_EXT = ["png", "jpg", "jpeg", "webp", "gif", "svg", "avif"] as const;
+const MIME_BY_EXT: Record<string, string> = {
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  webp: "image/webp",
+  gif: "image/gif",
+  svg: "image/svg+xml",
+  avif: "image/avif",
+};
 
 /** قائمة الصور المرفوعة */
 export async function GET() {
   if (!(await isAdminAuthed())) return unauthorized();
   try {
-    await mkdir(UPLOAD_DIR, { recursive: true });
-    const files = (await readdir(UPLOAD_DIR)).filter((f) => !f.startsWith("."));
-    const items = await Promise.all(
-      files.map(async (f) => ({
-        name: f,
-        url: `/uploads/${f}`,
-      }))
-    );
-    return NextResponse.json({ ok: true, items });
+    const items = await db.media.findMany({
+      orderBy: { createdAt: "desc" },
+      select: { name: true, size: true, mime: true, createdAt: true },
+    });
+    return NextResponse.json({
+      ok: true,
+      items: items.map((m) => ({
+        name: m.name,
+        size: m.size,
+        url: `/api/media/${m.name}`,
+      })),
+    });
   } catch (e) {
     console.error("media list", e);
-    return NextResponse.json({ ok: false, error: "تعذّر قراءة الملفات" }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "تعذّر قراءة المكتبة" }, { status: 500 });
   }
 }
 
-/** رفع صورة جديدة */
+/** رفع صورة جديدة إلى قاعدة البيانات */
 export async function POST(req: NextRequest) {
   if (!(await isAdminAuthed())) return unauthorized();
   try {
@@ -46,32 +61,42 @@ export async function POST(req: NextRequest) {
       );
     }
     const ext = (file.name.split(".").pop() ?? "").toLowerCase();
-    if (!ALLOWED_EXT.includes(ext)) {
+    if (!(ALLOWED_EXT as readonly string[]).includes(ext)) {
       return NextResponse.json(
         { ok: false, error: `صيغة غير مدعومة — المسموح: ${ALLOWED_EXT.join(", ")}` },
         { status: 400 }
       );
     }
 
-    // اسم آمن: طابع زمني + اسم منقّح
-    const base = file.name
-      .replace(/\.[^.]+$/, "")
-      .replace(/[^\p{L}\p{N}_-]+/gu, "-")
-      .slice(0, 40) || "image";
-    const filename = `${Date.now()}-${base}.${ext}`;
+    // اسم آمن: طابع زمني + اسم منقّح + جزء عشوائي لتفادي التكرار
+    const base =
+      file.name
+        .replace(/\.[^.]+$/, "")
+        .replace(/[^\p{L}\p{N}_-]+/gu, "-")
+        .slice(0, 40) || "image";
+    let filename = `${Date.now()}-${base}.${ext}`;
+    if (await db.media.findUnique({ where: { name: filename } })) {
+      filename = `${Date.now()}-${base}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    }
 
-    await mkdir(UPLOAD_DIR, { recursive: true });
     const buffer = Buffer.from(await file.arrayBuffer());
-    await writeFile(path.join(UPLOAD_DIR, filename), buffer);
+    await db.media.create({
+      data: {
+        name: filename,
+        mime: MIME_BY_EXT[ext] ?? file.type || "application/octet-stream",
+        size: buffer.length,
+        data: buffer.toString("base64"),
+      },
+    });
 
-    return NextResponse.json({ ok: true, url: `/uploads/${filename}`, name: filename });
+    return NextResponse.json({ ok: true, url: `/api/media/${filename}`, name: filename });
   } catch (e) {
     console.error("media upload", e);
     return NextResponse.json({ ok: false, error: "تعذّر رفع الصورة" }, { status: 500 });
   }
 }
 
-/** حذف صورة مرفوعة */
+/** حذف صورة من قاعدة البيانات */
 export async function DELETE(req: NextRequest) {
   if (!(await isAdminAuthed())) return unauthorized();
   try {
@@ -79,8 +104,11 @@ export async function DELETE(req: NextRequest) {
     if (!name || name.includes("/") || name.includes("..") || name.startsWith(".")) {
       return NextResponse.json({ ok: false, error: "اسم ملف غير صالح" }, { status: 400 });
     }
-    const filePath = path.join(UPLOAD_DIR, path.basename(name));
-    await unlink(filePath).catch(() => undefined);
+    try {
+      await db.media.delete({ where: { name } });
+    } catch {
+      // الملف غير موجود — لا مشكلة
+    }
     return NextResponse.json({ ok: true });
   } catch (e) {
     console.error("media delete", e);
