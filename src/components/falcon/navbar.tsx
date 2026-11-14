@@ -12,7 +12,7 @@ const LINKS = [
   { href: "#story", label: "قصتنا" },
 ];
 
-export function Navbar() {
+export function Navbar({ city = "IDLIB" }: { city?: string }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -47,7 +47,7 @@ export function Navbar() {
                 className="h-5 lg:h-6 w-auto object-contain"
               />
               <span className="block text-[9px] lg:text-[10px] tracking-[0.35em] text-zinc-500 mt-1 font-sans">
-                DAMASCUS
+                {city}
               </span>
             </span>
           </a>

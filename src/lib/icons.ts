@@ -1,0 +1,93 @@
+import {
+  Gem,
+  Droplets,
+  BatteryFull,
+  SunMoon,
+  Hammer,
+  BellRing,
+  Compass,
+  CalendarDays,
+  ShieldCheck,
+  Timer,
+  Star,
+  Gauge,
+  Vibrate,
+  Weight,
+  Wrench,
+  Truck,
+  RefreshCcw,
+  BadgeCheck,
+  MapPin,
+  MoonStar,
+  BellOff,
+  Award,
+  Layers,
+  Lock,
+  Sparkles,
+  type LucideIcon,
+} from "lucide-react";
+
+/**
+ * خريطة الأيقونات — تُستخدم في محتوى الموقع القابل للتعديل من لوحة الإدارة.
+ * كل عنصر محتوى يخزن مفتاح أيقونة نصياً (icon key) بدلاً من مكوّن React.
+ */
+export const ICON_MAP: Record<string, LucideIcon> = {
+  gem: Gem,
+  droplets: Droplets,
+  battery: BatteryFull,
+  sunmoon: SunMoon,
+  hammer: Hammer,
+  bell: BellRing,
+  compass: Compass,
+  calendar: CalendarDays,
+  shield: ShieldCheck,
+  timer: Timer,
+  star: Star,
+  gauge: Gauge,
+  vibrate: Vibrate,
+  weight: Weight,
+  wrench: Wrench,
+  truck: Truck,
+  refresh: RefreshCcw,
+  badgecheck: BadgeCheck,
+  mappin: MapPin,
+  moonstar: MoonStar,
+  belloff: BellOff,
+  award: Award,
+  layers: Layers,
+  lock: Lock,
+  sparkles: Sparkles,
+};
+
+/** قائمة خيارات الأيقونات لواجهات لوحة الإدارة */
+export const ICON_OPTIONS: { key: string; label: string }[] = [
+  { key: "gem", label: "جوهرة — زجاج سافاير" },
+  { key: "droplets", label: "قطرات — مقاومة الماء" },
+  { key: "battery", label: "بطارية" },
+  { key: "sunmoon", label: "شمس وقمر — إضاءة ليلية" },
+  { key: "hammer", label: "مطرقة — فولاذ" },
+  { key: "bell", label: "جرس — منبه" },
+  { key: "compass", label: "بوصلة — القبلة" },
+  { key: "calendar", label: "تقويم" },
+  { key: "shield", label: "درع — ضمان" },
+  { key: "timer", label: "مؤقت زمني" },
+  { key: "star", label: "نجمة" },
+  { key: "gauge", label: "عداد — قياس" },
+  { key: "vibrate", label: "اهتزاز" },
+  { key: "weight", label: "وزن خفيف" },
+  { key: "wrench", label: "مفتاح — صيانة" },
+  { key: "truck", label: "شاحنة — توصيل" },
+  { key: "refresh", label: "استبدال" },
+  { key: "badgecheck", label: "شارة موثوقة" },
+  { key: "mappin", label: "دبوس — موقع" },
+  { key: "moonstar", label: "هلال — تقويم هجري" },
+  { key: "belloff", label: "جرس مكتوم — وضع المسجد" },
+  { key: "award", label: "وسام — جودة" },
+  { key: "layers", label: "طبقات — تصنيع" },
+  { key: "lock", label: "قفل" },
+  { key: "sparkles", label: "لمعة" },
+];
+
+export function getIcon(key?: string): LucideIcon {
+  return (key && ICON_MAP[key]) || Star;
+}

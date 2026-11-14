@@ -2,15 +2,16 @@
 
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
+import type { ShowcaseContent } from "@/lib/site-defaults";
 
 /** بانر عرض درامي للساعة الأساسية */
-export function Showcase() {
+export function Showcase({ content }: { content: ShowcaseContent }) {
   return (
-    <section className="relative overflow-hidden bg-[#0A0A0B]" aria-label="ساعة صقر برو">
+    <section className="relative overflow-hidden bg-[#0A0A0B]" aria-label="ساعة فالكون برو">
       <div className="relative">
         <img
-          src="/brand/watch-hero.png"
-          alt="ساعة فالكون صقر برو — الإصدار الأسود المطفي"
+          src={content.image}
+          alt={content.imageAlt}
           loading="lazy"
           className="w-full object-cover aspect-[16/9] sm:aspect-[21/9] lg:aspect-[24/9] opacity-80"
         />
@@ -27,21 +28,20 @@ export function Showcase() {
               className="max-w-md"
             >
               <p className="text-xs font-bold tracking-[0.4em] text-zinc-400" dir="ltr">
-                SAQR-24 · FLAGSHIP
+                {content.latin}
               </p>
               <h2 className="mt-3 text-3xl sm:text-4xl lg:text-6xl font-black leading-tight">
-                صقر برو
+                {content.title}
                 <span className="block text-zinc-500 text-2xl sm:text-3xl lg:text-4xl mt-1">
-                  طليعة السرب
+                  {content.subtitle}
                 </span>
               </h2>
               <p className="mt-4 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-sm">
-                إطار فولاذي مطلي بالكربون الأسود، عقارب مضيئة بترتيب سويسري،
-                ومنبه مواقيت الصلاة يعمل بصمت وكبرياء.
+                {content.text}
               </p>
               <a href="#order" className="inline-flex mt-7">
                 <Button className="clip-corner bg-white text-[#0A0A0B] hover:bg-zinc-200 font-bold h-12 px-8">
-                  اقتنِ طليعة السرب
+                  {content.cta}
                 </Button>
               </a>
             </motion.div>

@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "فالكون | ساعات رياضية سورية — FALCON",
   description:
-    "فالكون — براند سوري للساعات الرياضية عالية الجودة. ساعات صُنعت بمعايير عالمية مع منبه ذكي لمواقيت الصلاة. FALCON Damascus sports watches with prayer time alarm.",
+    "فالكون — براند سوري للساعات الرياضية عالية الجودة. ساعات صُنعت بمعايير عالمية مع منبه لمواقيت الصلاة. FALCON Idlib sports watches with prayer time alarm.",
   keywords: [
     "فالكون",
     "ساعات رياضية",
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "منبه مواقيت الصلاة",
     "FALCON",
     "Syrian watches",
-    "Damascus",
+    "Idlib",
     "sports watch",
   ],
   authors: [{ name: "FALCON - فالكون" }],

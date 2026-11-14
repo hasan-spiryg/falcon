@@ -10,7 +10,7 @@ import {
   SYRIA_PARAMS,
   type NextPrayerInfo,
 } from "@/lib/praytimes";
-import { DAMASCUS } from "@/lib/cities";
+import { IDLIB } from "@/lib/cities";
 
 interface TimeState {
   h: number;
@@ -32,7 +32,7 @@ export function WatchFace({ size = 400 }: { size?: number }) {
 
   const times = useMemo(() => {
     const { year, month, day } = syriaDate();
-    return computePrayerTimes(year, month, day, { ...DAMASCUS, ...SYRIA_PARAMS });
+    return computePrayerTimes(year, month, day, { ...IDLIB, ...SYRIA_PARAMS });
   }, []);
 
   useEffect(() => {
@@ -175,7 +175,7 @@ export function WatchFace({ size = 400 }: { size?: number }) {
         </text>
         <image href="/brand/icon_falcon_dark.png" x="178" y="124" width="44" height="32" opacity="0.1" preserveAspectRatio="xMidYMid meet" />
         <text x="200" y="182" textAnchor="middle" fill="#9a9aa0" fontSize="8" fontFamily="Tajawal, sans-serif" letterSpacing="2.5">
-          DAMASCUS · SAQR-24
+          IDLIB · FALCON PRO
         </text>
 
         {/* نافذة الصلاة القادمة الرقمية */}

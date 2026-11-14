@@ -3,15 +3,11 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { WatchFace } from "./watch-face";
-import { ChevronDown, BellRing, ShieldCheck, Droplets } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { getIcon } from "@/lib/icons";
+import type { HeroContent } from "@/lib/site-defaults";
 
-const STATS = [
-  { icon: Droplets, value: "20 ATM", label: "مقاومة الماء" },
-  { icon: ShieldCheck, value: "5 سنوات", label: "ضمان دولي" },
-  { icon: BellRing, value: "6 مواقيت", label: "منبه الصلاة" },
-];
-
-export function Hero() {
+export function Hero({ content }: { content: HeroContent }) {
   return (
     <section id="home" className="relative min-h-screen bg-grid overflow-hidden flex flex-col">
       {/* توهجات خلفية */}
@@ -38,7 +34,7 @@ export function Hero() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-white" />
               </span>
               <span className="text-xs sm:text-sm text-zinc-300 font-medium tracking-wide">
-                براند سوري · صُنع في دمشق
+                {content.badge}
               </span>
             </motion.div>
 
@@ -48,9 +44,9 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.1 }}
               className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black leading-[1.15]"
             >
-              ساعات رياضية
+              {content.title1}
               <br />
-              <span className="text-shine">صُنعت لتقود الزمن</span>
+              <span className="text-shine">{content.title2}</span>
             </motion.h1>
 
             <motion.p
@@ -59,8 +55,7 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="mt-6 text-base sm:text-lg lg:text-xl text-zinc-400 leading-relaxed max-w-xl mx-auto lg:mx-0"
             >
-              فالكون — ساعات رياضية عالية الجودة بمعايير عالمية، مزوّدة بمنبه ذكي
-              لمواقيت الصلاة. هندسة دقيقة، تصميم جسور، وروح صقر سوري.
+              {content.subtitle}
             </motion.p>
 
             <motion.div
@@ -71,7 +66,7 @@ export function Hero() {
             >
               <a href="#collection" className="w-full sm:w-auto">
                 <Button className="w-full sm:w-auto clip-corner bg-white text-[#0A0A0B] hover:bg-zinc-200 font-bold h-13 px-9 text-base py-3.5">
-                  اكتشف المجموعة
+                  {content.ctaPrimary}
                 </Button>
               </a>
               <a href="#prayer" className="w-full sm:w-auto">
@@ -79,7 +74,7 @@ export function Hero() {
                   variant="outline"
                   className="w-full sm:w-auto clip-corner border-white/25 text-white hover:bg-white/10 hover:text-white font-bold h-13 px-9 text-base py-3.5"
                 >
-                  ميزة مواقيت الصلاة
+                  {content.ctaSecondary}
                 </Button>
               </a>
             </motion.div>
@@ -91,15 +86,18 @@ export function Hero() {
               transition={{ duration: 0.7, delay: 0.45 }}
               className="mt-12 grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0"
             >
-              {STATS.map((s) => (
-                <div key={s.label} className="border-r-2 border-white/15 pr-3 sm:pr-4 text-right">
-                  <dd className="text-xl sm:text-2xl font-black text-white flex items-center gap-1.5">
-                    <s.icon className="w-4 h-4 text-zinc-500 shrink-0" aria-hidden />
-                    {s.value}
-                  </dd>
-                  <dt className="text-[11px] sm:text-xs text-zinc-500 mt-1">{s.label}</dt>
-                </div>
-              ))}
+              {content.stats.map((s) => {
+                const Icon = getIcon(s.icon);
+                return (
+                  <div key={s.label} className="border-r-2 border-white/15 pr-3 sm:pr-4 text-right">
+                    <dd className="text-xl sm:text-2xl font-black text-white flex items-center gap-1.5">
+                      <Icon className="w-4 h-4 text-zinc-500 shrink-0" aria-hidden />
+                      {s.value}
+                    </dd>
+                    <dt className="text-[11px] sm:text-xs text-zinc-500 mt-1">{s.label}</dt>
+                  </div>
+                );
+              })}
             </motion.dl>
           </div>
 

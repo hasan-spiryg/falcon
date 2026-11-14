@@ -24,5 +24,8 @@ export const SYRIAN_CITIES: SyrianCity[] = [
   { id: "palmyra", name: "تدمر", nameEn: "Palmyra", lat: 34.5526, lng: 38.2791 },
 ];
 
-/** دمشق — المدينة الافتراضية */
+/** دمشق — عاصمة المواقيت */
 export const DAMASCUS = SYRIAN_CITIES[0];
+
+/** إدلب — المركز الرئيسي للبراند والمدينة الافتراضية */
+export const IDLIB = SYRIAN_CITIES.find((c) => c.id === "idlib") ?? DAMASCUS;

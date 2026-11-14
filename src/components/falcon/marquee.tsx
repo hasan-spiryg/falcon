@@ -1,16 +1,8 @@
-/** شريط متحرك بكلمات الهوية */
-export function Marquee() {
-  const items = [
-    "ساعات رياضية",
-    "صناعة سورية",
-    "منبه مواقيت الصلاة",
-    "ضد الماء 20 ATM",
-    "زجاج سافاير",
-    "ضمان 5 سنوات",
-    "FALCON",
-    "DAMASCUS",
-  ];
-  const row = [...items, ...items];
+import type { MarqueeContent } from "@/lib/site-defaults";
+
+/** شريط متحرك بكلمات الهوية — قابل للتعديل من لوحة الإدارة */
+export function Marquee({ content }: { content: MarqueeContent }) {
+  const row = [...content.items, ...content.items];
   return (
     <div className="border-y border-white/10 bg-[#0E0E10] overflow-hidden py-4" dir="ltr" aria-hidden>
       <div className="flex w-max animate-marquee gap-0">

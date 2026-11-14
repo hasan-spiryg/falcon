@@ -15,14 +15,9 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { SYRIAN_CITIES } from "@/lib/cities";
 import { CheckCircle2, Loader2, Send } from "lucide-react";
+import type { ProductDTO } from "@/lib/site-defaults";
 
-const MODELS = [
-  { id: "saqr", name: "فالكون صقر — $199" },
-  { id: "shaheen", name: "فالكون شاهين — $229" },
-  { id: "hurr", name: "فالكون حر — $189" },
-];
-
-export function OrderSection() {
+export function OrderSection({ products }: { products: ProductDTO[] }) {
   const { toast } = useToast();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -191,9 +186,9 @@ export function OrderSection() {
                     <SelectValue placeholder="اختر ساعتك" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#141416] border-white/15">
-                    {MODELS.map((m) => (
+                    {products.map((m) => (
                       <SelectItem key={m.id} value={m.id} className="focus:bg-white/10 focus:text-white">
-                        {m.name}
+                        {m.name} {m.price ? `— ${m.price}` : ""}
                       </SelectItem>
                     ))}
                   </SelectContent>

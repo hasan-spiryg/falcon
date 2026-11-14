@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -23,15 +22,14 @@ import {
   SYRIA_PARAMS,
   type PrayerTimes,
 } from "@/lib/praytimes";
-import { SYRIAN_CITIES, DAMASCUS } from "@/lib/cities";
+import { SYRIAN_CITIES, IDLIB } from "@/lib/cities";
+import { getIcon } from "@/lib/icons";
+import type { PrayerContent } from "@/lib/site-defaults";
 import {
   BellRing,
   MapPin,
-  MoonStar,
   Vibrate,
   CalendarDays,
-  Compass,
-  BellOff,
 } from "lucide-react";
 
 type PrayerKey = "fajr" | "sunrise" | "dhuhr" | "asr" | "maghrib" | "isha";
@@ -45,36 +43,8 @@ const LABELS: Record<PrayerKey, string> = {
   isha: "العشاء",
 };
 
-const FEATURES = [
-  {
-    icon: Vibrate,
-    title: "تنبيه بالاهتزاز",
-    text: "اهتزاز لطيف عند كل ميقات — لا أصوات مزعجة في الاجتماعات أو الصالة الرياضية.",
-  },
-  {
-    icon: MapPin,
-    title: "14 مدينة سورية",
-    text: "أوقات دقيقة محسوبة فلكياً لكل محافظات سوريا، مع إمكانية إضافة مدن أخرى عبر التطبيق.",
-  },
-  {
-    icon: MoonStar,
-    title: "التقويم الهجري",
-    text: "عرض التاريخ الهجري والميلادي على الشاشة، مع تنبيهات مناسبة رمضان مسبقاً.",
-  },
-  {
-    icon: Compass,
-    title: "بوصلة القبلة",
-    text: "مؤشر اتجاه القبلة مدمج في الساعة — فائدة للمسافر والمسافرة أينما حللت.",
-  },
-  {
-    icon: BellOff,
-    title: "وضع المسجد",
-    text: "تعطيل التنبيهات مؤقتاً بضغطة واحدة أثناء الصلاة أو المجالس.",
-  },
-];
-
-export function PrayerSection() {
-  const [cityId, setCityId] = useState<string>(DAMASCUS.id);
+export function PrayerSection({ content }: { content: PrayerContent }) {
+  const [cityId, setCityId] = useState<string>(IDLIB.id);
   const [now, setNow] = useState<number | null>(null);
   const [alarms, setAlarms] = useState<Record<PrayerKey, boolean>>({
     fajr: true,
@@ -85,7 +55,7 @@ export function PrayerSection() {
     isha: true,
   });
 
-  const city = SYRIAN_CITIES.find((c) => c.id === cityId) ?? DAMASCUS;
+  const city = SYRIAN_CITIES.find((c) => c.id === cityId) ?? IDLIB;
 
   const times: PrayerTimes = useMemo(() => {
     const { year, month, day } = syriaDate();
@@ -121,7 +91,7 @@ export function PrayerSection() {
               className="inline-flex items-center gap-2 border border-white/15 bg-white/5 px-4 py-1.5 text-xs sm:text-sm text-zinc-300 font-medium"
             >
               <BellRing className="w-3.5 h-3.5" aria-hidden />
-              الميزة المميزة — SALAT ALARM
+              {content.badge}
             </motion.span>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -130,9 +100,9 @@ export function PrayerSection() {
               transition={{ duration: 0.6 }}
               className="mt-4 text-3xl sm:text-4xl lg:text-5xl font-black leading-tight"
             >
-              منبه مواقيت الصلاة،
+              {content.title1}
               <br />
-              <span className="text-zinc-500">في معصمك أينما كنت</span>
+              <span className="text-zinc-500">{content.title2}</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -141,30 +111,31 @@ export function PrayerSection() {
               transition={{ duration: 0.6, delay: 0.1 }}
               className="mt-5 text-zinc-400 text-base lg:text-lg leading-relaxed"
             >
-              صمّمنا فالكون ليبقى الوقت فيه مربوطاً بالإيمان: تنبيه صامت بالاهتزاز
-              عند كل ميقات، محسوب فلكياً لمدينتك، دون حاجة للهاتف أو الإنترنت.
-              الوقت عبادة، والساعة رفيقك.
+              {content.text}
             </motion.p>
 
             <ul className="mt-8 grid sm:grid-cols-2 gap-4" aria-label="مزايا منبه الصلاة">
-              {FEATURES.map((f, i) => (
-                <motion.li
-                  key={f.title}
-                  initial={{ opacity: 0, y: 16 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.07 }}
-                  className="flex gap-3.5"
-                >
-                  <span className="shrink-0 w-10 h-10 border border-white/15 bg-white/5 flex items-center justify-center clip-corner-sm">
-                    <f.icon className="w-5 h-5 text-white" aria-hidden />
-                  </span>
-                  <div>
-                    <h3 className="font-bold text-sm">{f.title}</h3>
-                    <p className="mt-1 text-xs sm:text-[13px] text-zinc-500 leading-relaxed">{f.text}</p>
-                  </div>
-                </motion.li>
-              ))}
+              {content.features.map((f, i) => {
+                const FeatureIcon = getIcon(f.icon);
+                return (
+                  <motion.li
+                    key={i}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.07 }}
+                    className="flex gap-3.5"
+                  >
+                    <span className="shrink-0 w-10 h-10 border border-white/15 bg-white/5 flex items-center justify-center clip-corner-sm">
+                      <FeatureIcon className="w-5 h-5 text-white" aria-hidden />
+                    </span>
+                    <div>
+                      <h3 className="font-bold text-sm">{f.title}</h3>
+                      <p className="mt-1 text-xs sm:text-[13px] text-zinc-500 leading-relaxed">{f.text}</p>
+                    </div>
+                  </motion.li>
+                );
+              })}
             </ul>
           </div>
 
@@ -294,10 +265,7 @@ export function PrayerSection() {
                 })}
               </ul>
 
-              <p className="mt-4 text-[11px] leading-relaxed text-zinc-600">
-                * هذا عرض تفاعلي لميزة الساعة — الأوقات محسوبة فلكياً بطريقة الفجر 18°
-                والعشاء 17° وقد تختلف دقيقة عن تقويم وزارة الأوقاف.
-              </p>
+              <p className="mt-4 text-[11px] leading-relaxed text-zinc-600">{content.note}</p>
             </div>
 
             {/* بطاقة عائمة — وضع المسجد */}

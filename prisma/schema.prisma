@@ -9,12 +9,40 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// المنتجات — تُدار من لوحة الإدارة
+model Product {
+  id        String   @id @default(cuid())
+  name      String // الاسم المعروض مثل: فالكون برو
+  latin     String   @default("") // الاسم اللاتيني مثل: FALCON PRO
+  image     String   @default("") // مسار الصورة
+  price     String   @default("") // السعر المعروض مثل: $199
+  tagline   String   @default("") // الوصف القصير
+  specs     String   @default("[]") // JSON: مصفوفة {icon, text}
+  badge     String? // شارة مثل: الأكثر طلباً
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("products")
+}
+
+// إعدادات محتوى الموقع — قيمة JSON لكل قسم
+model Setting {
+  key       String   @id
+  value     String // JSON
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
+
 model Order {
   id        String   @id @default(cuid())
   name      String
   phone     String
   city      String
   model     String
+  status    String   @default("new") // new | confirmed | delivered | cancelled
   createdAt DateTime @default(now())
 
   @@map("orders")

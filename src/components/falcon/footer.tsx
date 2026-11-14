@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { MapPin, Phone, Mail, Instagram, Facebook, Youtube, Send } from "lucide-react";
+import type { ContactContent, FooterContent } from "@/lib/site-defaults";
 
 const NAV = [
   { href: "#home", label: "الرئيسية" },
@@ -14,7 +15,13 @@ const NAV = [
   { href: "#story", label: "قصتنا" },
 ];
 
-export function Footer() {
+export function Footer({
+  contact,
+  content,
+}: {
+  contact: ContactContent;
+  content: FooterContent;
+}) {
   const { toast } = useToast();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -34,7 +41,7 @@ export function Footer() {
         toast({ title: "تعذّر الاشتراك", description: data.error, variant: "destructive" });
       } else {
         toast({
-          title: "أهلاً بك في سرب الصقور",
+          title: "أهلاً بك في عائلة فالكون",
           description: "ستصلك أخبار الإصدارات الجديدة أولاً بأول",
         });
         setEmail("");
@@ -53,10 +60,8 @@ export function Footer() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 lg:py-12">
           <div className="grid lg:grid-cols-2 gap-6 lg:gap-12 items-center">
             <div className="text-center lg:text-right">
-              <h3 className="text-2xl lg:text-3xl font-black">انضم إلى سرب الصقور</h3>
-              <p className="mt-2 text-zinc-500 text-sm lg:text-base">
-                إصدارات محدودة، عروض حصرية، وقصص من الورشة — مباشرة إلى بريدك
-              </p>
+              <h3 className="text-2xl lg:text-3xl font-black">{content.newsletterTitle}</h3>
+              <p className="mt-2 text-zinc-500 text-sm lg:text-base">{content.newsletterText}</p>
             </div>
             <form onSubmit={subscribe} className="flex gap-3 max-w-md w-full mx-auto lg:mx-0">
               <Input
@@ -97,14 +102,11 @@ export function Footer() {
                   className="h-6 w-auto object-contain"
                 />
                 <span className="block text-[10px] tracking-[0.35em] text-zinc-600 mt-1">
-                  DAMASCUS · SINCE 2024
+                  {contact.city} · {contact.since}
                 </span>
               </div>
             </div>
-            <p className="mt-5 text-sm text-zinc-500 leading-relaxed">
-              براند سوري للساعات الرياضية عالية الجودة. نصنع ساعات تجمع بين
-              المتانة والدقة ومنبه مواقيت الصلاة — لأن الوقت أمانة.
-            </p>
+            <p className="mt-5 text-sm text-zinc-500 leading-relaxed">{content.description}</p>
             <div className="mt-6 flex items-center gap-3" aria-label="حسابات التواصل">
               {[
                 { icon: Instagram, label: "إنستغرام فالكون" },
@@ -143,15 +145,15 @@ export function Footer() {
             <ul className="space-y-4 text-sm text-zinc-500">
               <li className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-zinc-600" aria-hidden />
-                <span>دمشق — شارع بغداد، بناء فالكون</span>
+                <span>{contact.address}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-4 h-4 shrink-0 text-zinc-600" aria-hidden />
-                <span dir="ltr">+963 11 XXX XXXX</span>
+                <span dir="ltr">{contact.phone}</span>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-4 h-4 shrink-0 text-zinc-600" aria-hidden />
-                <span dir="ltr">hello@falcon-watch.sy</span>
+                <span dir="ltr">{contact.email}</span>
               </li>
             </ul>
           </div>
@@ -162,11 +164,19 @@ export function Footer() {
       <div className="border-t border-white/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-zinc-600">
-            © {new Date().getFullYear()} فالكون — جميع الحقوق محفوظة · صنع بفخر في سوريا
+            © {new Date().getFullYear()} {content.rights}
           </p>
-          <p className="text-[10px] tracking-[0.3em] text-zinc-700 font-sans" dir="ltr">
-            FALCON — DAMASCUS · SPORT WATCHES
-          </p>
+          <div className="flex items-center gap-5">
+            <a
+              href="/admin"
+              className="text-[11px] text-zinc-700 hover:text-zinc-400 transition-colors"
+            >
+              لوحة التحكم
+            </a>
+            <p className="text-[10px] tracking-[0.3em] text-zinc-700 font-sans" dir="ltr">
+              {content.latinLine}
+            </p>
+          </div>
         </div>
       </div>
     </footer>

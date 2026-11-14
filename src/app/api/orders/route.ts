@@ -8,8 +8,6 @@ interface OrderBody {
   model?: string;
 }
 
-const MODELS = new Set(["saqr", "shaheen", "hurr"]);
-
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json()) as OrderBody;
@@ -27,7 +25,13 @@ export async function POST(req: NextRequest) {
     if (!city) {
       return NextResponse.json({ ok: false, error: "الرجاء اختيار المدينة" }, { status: 400 });
     }
-    if (!MODELS.has(model)) {
+
+    // التحقق من أن الموديل منتج نشط فعلي في قاعدة البيانات
+    const product = await db.product.findFirst({
+      where: { id: model, active: true },
+      select: { id: true },
+    });
+    if (!product) {
       return NextResponse.json({ ok: false, error: "الرجاء اختيار الموديل" }, { status: 400 });
     }
 
